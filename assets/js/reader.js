@@ -109,6 +109,6 @@ $('ul#handles').on('click', 'li', function() {
 
 	App.switchTab("view-message-chain", "sl", function() {
 		var messageScroll = $("#view-message-chain .scroll");
-		messageScroll.scrollTop([0].scrollHeight);
+		messageScroll.scrollTop(messageScroll[0].scrollHeight);
 	});
 });
