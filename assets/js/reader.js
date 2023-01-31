@@ -1,3 +1,5 @@
+pathToAttachments = "D:/iPhone Backup/sms backup";
+
 var reader = {
 	db: null,
 
@@ -80,7 +82,8 @@ $('ul#handles').on('click', 'li', function() {
 			messageBody = htmlEntities(sms[1]);
 
 		if (sms[3] != null) {
-			messageBody = "[ATTACHMENT HERE]";
+			attachmentFilename = pathToAttachments + sms[3].replace(/^~\/Library\/SMS/, '');
+			messageBody = `<a href=\"${attachmentFilename}\">\n<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading=\"lazy\">\n</a>`;
 		}
 		else if (sms[1] == null && sms[4] != null) {
 			
