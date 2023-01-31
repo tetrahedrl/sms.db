@@ -16,7 +16,8 @@ var reader = {
 	},
 
 	fetchSMSByHandle: function(handle_id) {
-		var smsExec = this.db.exec("SELECT `message`.`ROWID`, `message`.`text`, `message`.`is_from_me`, `attachment`.`filename` " + 
+		var smsExec = this.db.exec("SELECT `message`.`ROWID`, `message`.`text`, `message`.`is_from_me`, `attachment`.`filename`, `message`.`attributedBody` " + 
+		//var smsExec = this.db.exec("SELECT `message`.`ROWID`, `message`.`text`, `message`.`is_from_me` " + 
 			"FROM message " + 
 			"LEFT JOIN message_attachment_join ON message.ROWID = message_id " + 
 			"LEFT JOIN attachment ON attachment.ROWID = attachment_id " +
@@ -81,6 +82,23 @@ $('ul#handles').on('click', 'li', function() {
 		if (sms[3] != null) {
 			messageBody = "[ATTACHMENT HERE]";
 		}
+		else if (sms[1] == null && sms[4] != null) {
+			
+			for (var j = 0; j < sms[4].length; j++) {
+				if (sms[4][j] == 43) {
+					j += 2;
+					if (sms[4][j] != 134) {
+						messageBody = "";
+					}
+					while (sms[4][j] != 134)
+					{
+						messageBody += String.fromCharCode(sms[4][j]);
+						j++;
+					}
+					break;
+				}
+			}
+		}
 
 		buffer += '<div class="message-row"><div class="message"><div class="' + fromWho + '">' + 
 			messageBody + 
@@ -91,6 +109,6 @@ $('ul#handles').on('click', 'li', function() {
 
 	App.switchTab("view-message-chain", "sl", function() {
 		var messageScroll = $("#view-message-chain .scroll");
-		messageScroll.scrollTop(messageScroll[0].scrollHeight);
+		messageScroll.scrollTop([0].scrollHeight);
 	});
 });
