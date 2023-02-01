@@ -1,4 +1,4 @@
-pathToAttachments = "D:/iPhone Backup/sms backup";
+pathToAttachments = "D:/iPhone Backup/sms backup/MediaDomain";
 
 var reader = {
 	db: null,
@@ -82,8 +82,15 @@ $('ul#handles').on('click', 'li', function() {
 			messageBody = htmlEntities(sms[1]);
 
 		if (sms[3] != null) {
-			attachmentFilename = pathToAttachments + sms[3].replace(/^~\/Library\/SMS/, '');
-			messageBody = `<a href=\"${attachmentFilename}\">\n<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading=\"lazy\">\n</a>`;
+			if(sms[3].match(/\.(mov|heic|heif)$/i) != null) {
+				
+			}
+			else {
+				attachmentFilename = pathToAttachments + sms[3].replace(/^~/, '');
+			}
+			messageBody = `<a href=\"${attachmentFilename}\">\n
+				<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading=\"lazy\">\n
+				</a>`;
 		}
 		else if (sms[1] == null && sms[4] != null) {
 			

@@ -42,5 +42,6 @@ section {
 	font-size:13px;
 }
 .chatlog__attachment-media {
-	max-width: 270px;
+	max-width: 280px;
+	border-radius: 20px;
 }
