@@ -1,4 +1,4 @@
-pathToAttachments = "D:/iPhone Backup/sms backup/MediaDomain";
+pathToAttachments = "D:\\iPhone Backup\\SMS Backup Viewing\\MediaDomain";
 
 var reader = {
 	db: null,
@@ -82,15 +82,16 @@ $('ul#handles').on('click', 'li', function() {
 			messageBody = htmlEntities(sms[1]);
 
 		if (sms[3] != null) {
-			if(sms[3].match(/\.(mov|heic|heif)$/i) != null) {
-				
-			}
-			else {
-				attachmentFilename = pathToAttachments + sms[3].replace(/^~/, '');
-			}
+
+			attachmentFilename = pathToAttachments + sms[3].replace(/^~/, '');
+			attachmentFilename = attachmentFilename.replace('.heic', '.png');
+
 			messageBody = `<a href=\"${attachmentFilename}\">\n
-				<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading=\"lazy\">\n
-				</a>`;
+			<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading=\"lazy\">\n
+			</a>`;
+			
+
+			
 		}
 		else if (sms[1] == null && sms[4] != null) {
 			
@@ -105,6 +106,7 @@ $('ul#handles').on('click', 'li', function() {
 						messageBody += String.fromCharCode(sms[4][j]);
 						j++;
 					}
+					messageBody = htmlEntities(messageBody);
 					break;
 				}
 			}
@@ -122,3 +124,13 @@ $('ul#handles').on('click', 'li', function() {
 		messageScroll.scrollTop(messageScroll[0].scrollHeight);
 	});
 });
+
+/*
+function loadFile(filePath){
+	var result;
+	var request = new XMLHttpRequest();
+	request.open("GET", filePath, false);
+	request.send();
+	return result;
+}*/
+
