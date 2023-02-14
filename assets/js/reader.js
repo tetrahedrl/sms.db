@@ -1,4 +1,7 @@
 pathToAttachments = "D:\\iPhone Backup\\SMS Backup Viewing\\MediaDomain";
+const imgRegex = new RegExp('(\.(jpg|jpeg|png|webp)|(photo|pluginPayloadAttachment))','i');
+const movRegex = new RegExp('\.(mov|mp4)','i');
+const urlRegex = new RegExp('http','i');
 
 var reader = {
 	db: null,
@@ -18,7 +21,7 @@ var reader = {
 	},
 
 	fetchSMSByHandle: function(handle_id) {
-		var smsExec = this.db.exec("SELECT `message`.`ROWID`, `message`.`text`, `message`.`is_from_me`, `attachment`.`filename`, `message`.`attributedBody` " + 
+		var smsExec = this.db.exec("SELECT `message`.`ROWID`, `message`.`text`, `message`.`is_from_me`, `attachment`.`filename`, `message`.`attributedBody`, `message`.`date` " + 
 		//var smsExec = this.db.exec("SELECT `message`.`ROWID`, `message`.`text`, `message`.`is_from_me` " + 
 			"FROM message " + 
 			"LEFT JOIN message_attachment_join ON message.ROWID = message_id " + 
@@ -83,12 +86,31 @@ $('ul#handles').on('click', 'li', function() {
 
 		if (sms[3] != null) {
 
-			attachmentFilename = pathToAttachments + sms[3].replace(/^~/, '');
-			attachmentFilename = attachmentFilename.replace('.heic', '.png');
 
-			messageBody = `<a href=\"${attachmentFilename}\">\n
-			<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading=\"lazy\">\n
-			</a>`;
+			attachmentFilename = sms[3].replace(/[:*?\\"<>|]/, '-');
+			attachmentFilename = pathToAttachments + attachmentFilename.replace(/^~/, '');
+			attachmentFilename = attachmentFilename.replace(/\.heic/i, '.png');
+
+			if(urlRegex.test(messageBody)){
+				messageLink = messageBody;
+			}
+			else {
+				messageLink = attachmentFilename;
+			}
+
+			if(imgRegex.test(attachmentFilename)){
+				messageBody = `<a href=\"${messageLink}\">\n
+				<img class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" alt=\"Image attachment\" title=\"${attachmentFilename}\" loading="lazy">\n
+				</a>`;
+			}
+			else if(movRegex.test(attachmentFilename)){
+				messageBody = `<a href=\"${messageLink}\">\n
+				<video class=\"chatlog__attachment-media\" src=\"${attachmentFilename}\" controls=\"controls\">\n
+				</a>`;
+			}
+			else {
+				messageBody = `<a href=\"${messageLink}\">Attachment</a>`;
+			}
 			
 
 			
@@ -134,3 +156,8 @@ function loadFile(filePath){
 	return result;
 }*/
 
+/*
+$("img.lazyload").lazyload({
+	selector: ".chatlog__attachment-media"
+});
+*/
